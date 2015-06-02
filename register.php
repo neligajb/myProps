@@ -75,7 +75,7 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    if (!$stmt->bind_param("sss", $username)) {
+    if (!$stmt->bind_param("sss", $username, $password, $name)) {
       echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
@@ -106,6 +106,10 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
     $stmt->fetch();
 
     mysqli_close($mysqli);
-    header("Location: /cs290-finalProject/content?userID=" . $userID);
+    die('User Added.');
+    //header("Location: /cs290-finalProject/content?userID=" . $userID);
   }
+}
+else {
+  die('Bad login info.');
 }

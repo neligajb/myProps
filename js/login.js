@@ -12,7 +12,7 @@ $(document).ready(function() {
     $("#registered-question").remove();
     $("#registration-form").append("<h2>Sign Up</h2><form><label for='new-email'>Email</label>" +
     "<input type='email' id='new-email' maxlength='50' required ><span id='user-result'></span><br>" +
-    "<label for='name'>Name</label><input type='text' id='name' maxlength='50' required ><br>" +
+    "<label for='new-name'>Name</label><input type='text' id='new-name' maxlength='50' required ><br>" +
     "<label for='new-password'>Password</label><input type='password' id='new-password' maxlength='20' required</form>" +
     "<br><input type='button' name='register' class='home-submit' id='register' value='Submit'></form>");
   });
@@ -22,9 +22,9 @@ $(document).ready(function() {
     $('input[id="new-email"]').css("box-shadow", "");
   });
 
-  $registrationForm.on('focus', '#name', function () {
-    $('input[id="name"]').css("border", "");
-    $('input[id="name"]').css("box-shadow", "");
+  $registrationForm.on('focus', '#new-name', function () {
+    $('input[id="new-name"]').css("border", "");
+    $('input[id="new-name"]').css("box-shadow", "");
   });
 
   $registrationForm.on('focus', '#new-password', function () {
@@ -34,12 +34,13 @@ $(document).ready(function() {
 
   $registrationForm.on('click', '#register', function () {
     var emailP = $("#new-email").val();
-    var nameP = $("name").val();
+    var nameP = $("#new-name").val();
     var passwordP = $("#new-password").val();
+
     //check for blanks
     if (emailP == '' || nameP == '' || passwordP == '') {
-      $('input[id="new-email"], input[id="name"], input[id="new-password"]').css("border", "2px #F7A8A8");
-      $('input[id="new-email"], input[id="name"], input[id="new-password"]').css("box-shadow", "0 0 3px red");
+      $('input[id="new-email"], input[id="new-name"], input[id="new-password"]').css("border", "2px #F7A8A8");
+      $('input[id="new-email"], input[id="new-name"], input[id="new-password"]').css("box-shadow", "0 0 3px red");
       alert("Please complete all fields.");
       return;
     }
@@ -51,6 +52,7 @@ $(document).ready(function() {
 
     if (!isValidName(nameP)) {
       alert("Please enter a valid name.");
+      return;
     }
 
     if (passwordP.length < 6) {
@@ -58,9 +60,9 @@ $(document).ready(function() {
       return;
     }
 
-    $.post('register.php', {email1: emailP, name1: nameP, password1: passwordP}, function (data) {
+    $.post('register.php', {username1: emailP, name1: nameP, password1: passwordP}, function (data) {
       $registrationForm.append('<p id="login-response"></p>');
-      $registrationForm.html(data); //dump the data received from PHP page
+      $("#login-response").html(data); //dump the data received from PHP page
     });
   });
 

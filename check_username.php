@@ -16,9 +16,9 @@ if(isset($_POST["username"]))
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
     die();
   }
-  else {
-    echo "Connection worked!<br>";
-  }
+//  else {
+//    echo "Connection worked!<br>";
+//  }
 
 
   //received username value from registration page
@@ -29,9 +29,8 @@ if(isset($_POST["username"]))
 
   //sanitize username
   $username = filter_var($username, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
-
   //check if username is in db
-  if (!($stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -55,9 +54,9 @@ if(isset($_POST["username"]))
 
   //if returned value is not null, username is not available
   if($username_exists) {
-    die('<img src="imgs/red-x.png" />');
+    die('<img src="imgs/red-x.png" width="20" />');
   }else{
-    die('<img src="imgs/green-check.png" />');
+    die('<img src="imgs/green-check.png" width="20" />');
   }
 }
 

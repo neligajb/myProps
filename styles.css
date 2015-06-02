@@ -1,0 +1,36 @@
+#user-result {
+    margin-left: 2px;
+    display: inline-block
+    vertical-align: middle;
+}
+
+#user-result > img {
+    vertical-align: middle;
+}
+
+.home-form > form > label {
+    display: inline-block;
+    width: 75px;
+    text-align: right;
+    margin-bottom: 8px;
+}
+.home-form > form > input {
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+#registration-button {
+    margin-left: 4px;
+}
+
+#registration-form > form > label {
+    margin-right: 4px;
+}
+
+.home-form > form > #login {
+    margin-left: 204px;
+}
+
+.home-form > form > #register {
+    margin-left: 196px;
+}

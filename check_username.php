@@ -29,6 +29,7 @@ if(isset($_POST["username"]))
 
   //sanitize username
   $username = filter_var($username, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+
   //check if username is in db
   if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
@@ -52,11 +53,19 @@ if(isset($_POST["username"]))
 
   mysqli_close($mysqli);
 
+  function isEmail($n) {
+    return preg_match('/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/', $n);
+  }
+
   //if returned value is not null, username is not available
-  if($username_exists) {
-    die('<img src="imgs/red-x.png" width="20" />');
-  }else{
-    die('<img src="imgs/green-check.png" width="20" />');
+  if ($username_exists && isEmail($username)) {
+    die('<img src="imgs/red-x.png" width="20" class="user-warn"/><span id="un-exists">user name already exists</span>');
+  }
+  else if(!isEmail($username)) {
+    die('<img src="imgs/red-x.png" width="20" class="user-warn"/>');
+  }
+  else {
+    die('<img src="imgs/green-check.png" width="20" class="user-warn"/>');
   }
 }
 

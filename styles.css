@@ -34,3 +34,7 @@
 .home-form > form > #register {
     margin-left: 196px;
 }
+
+img.user-warn {
+    opacity: .5;
+}

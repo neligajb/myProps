@@ -3,12 +3,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
-//much of the following block of session handling code is borrowed from the "PHP Sessions" lecture
-if ((isset($_SESSION['username']))) {
+if ((isset($_SESSION['userID']))) {
   $filePath = explode('/', $_SERVER['PHP_SELF'], -1);
   $filePath = implode('/', $filePath);
   $redirect = "http://" . $_SERVER['HTTP_HOST'] . $filePath;
-  header("Location: {$redirect}/props.php", true);
+  header("Location: {$redirect}/content.php", true);
   die();
 }
 ?>
@@ -21,7 +20,7 @@ if ((isset($_SESSION['username']))) {
 </head>
 <body>
   <div id="login-form" class="home-form">
-    <form>
+    <form id="login-inner-form">
       <h2>Login</h2>
       <label for="email">Email</label>
       <input type="email" name="demail" id="email"><br>

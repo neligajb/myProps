@@ -18,18 +18,15 @@ $(document).ready(function() {
   });
 
   $registrationForm.on('focus', '#new-email', function () {
-    $('input[id="new-email"]').css("border", "");
-    $('input[id="new-email"]').css("box-shadow", "");
+    $('input[id="new-email"]').css({"border": "", "box-shadow": ""});
   });
 
   $registrationForm.on('focus', '#new-name', function () {
-    $('input[id="new-name"]').css("border", "");
-    $('input[id="new-name"]').css("box-shadow", "");
+    $('input[id="new-name"]').css({"border": "", "box-shadow": ""});
   });
 
   $registrationForm.on('focus', '#new-password', function () {
-    $('input[id="new-password"]').css("border", "");
-    $('input[id="new-password"]').css("box-shadow", "");
+    $('input[id="new-password"]').css({"border": "", "box-shadow": ""});
   });
 
   $registrationForm.on('click', '#register', function () {
@@ -39,8 +36,7 @@ $(document).ready(function() {
 
     //check for blanks
     if (emailP == '' || nameP == '' || passwordP == '') {
-      $('input[id="new-email"], input[id="new-name"], input[id="new-password"]').css("border", "2px #F7A8A8");
-      $('input[id="new-email"], input[id="new-name"], input[id="new-password"]').css("box-shadow", "0 0 3px red");
+      $('input[id="new-email"], input[id="new-name"], input[id="new-password"]').css({"border": "2px #F7A8A8", "box-shadow": "0 0 3px red"});
       alert("Please complete all fields.");
       return;
     }
@@ -61,8 +57,14 @@ $(document).ready(function() {
     }
 
     $.post('register.php', {username1: emailP, name1: nameP, password1: passwordP}, function (data) {
-      $registrationForm.append('<p id="login-response"></p>');
-      $("#login-response").html(data); //dump the data received from PHP page
+      if (data == 'un-exists') {
+        $('input[id="new-name"]').val('');
+        $('input[id="new-password"]').val('');
+      }
+      else {
+        $registrationForm.append('<p id="login-response"></p>');
+        $("#login-response").html(data); //dump the data received from PHP page
+      }
     });
   });
 
@@ -75,5 +77,41 @@ $(document).ready(function() {
     var regex = /^[a-zA-Z][a-zA-Z \-'\.]+$/;
     return regex.test(n);
   }
+
+  //scripts for existing user login
+
+  var $login = $('#login');
+  var $email = $("#email");
+  var $password = $("#password");
+
+  $login.on('click', function() {
+    var emailP = $email.val();
+    var passwordP = $password.val();
+
+    if (emailP == '' || passwordP == '') {
+      $email.css({"border": "2px #F7A8A8", "box-shadow": "0 0 3px red"});
+      $password.css({"border": "2px #F7A8A8", "box-shadow": "0 0 3px red"});
+      alert("Please complete all fields.");
+      return;
+    }
+
+    $.post('check_existing_username.php', {username1: emailP, password1: passwordP}, function (data) {
+      if (data == 'login') {
+        window.location.replace("http://localhost/cs290-finalProject/content.php");
+      }
+      $('#login-inner-form').append('<span id="login-response1"></span>');
+      $("#login-response1").html(data); //dump the data received from PHP page
+    });
+
+  });
+
+  $email.on('focus', function () {
+    $email.css({"border": "", "box-shadow": ""});
+  });
+
+  $password.on('focus', function () {
+    $password.css({"border": "", "box-shadow": ""});
+  });
+
 
 });

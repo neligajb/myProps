@@ -7,26 +7,21 @@ function isEmail($n) {
   return preg_match('/^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/', $n);
 }
 
-function validName($n) {
-  return preg_match("/^[a-zA-Z][a-zA-Z -@'@.]+$/", $n);
-}
 
-if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["password1"])) {
+if (isset($_POST["username1"]) && isset($_POST["password1"])) {
 
   if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
-    die('No POST request.');
+    die('Bad POST request.');
   }
 
+  //check if valid email
   if (!isEmail($_POST["username1"]) || strlen($_POST["username1"]) > 50) {
-    die('Invalid Email (50 character max)');
+    die('Invalid Email');
   }
 
-  if (!validName($_POST["name1"]) || strlen($_POST["name1"]) > 50) {
-    die('Invalid name (50 character max)');
-  }
-
+  //check if valid password
   if (strlen($_POST["password1"]) < 6 || strlen($_POST["password1"]) > 20) {
-    die('Invalid password.');
+    die('Invalid password');
   }
 
   //connect to database
@@ -42,7 +37,7 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
   //sanitize entries
   $username = filter_var($username, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
   $password = filter_var($_POST["password1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
-  $name = filter_var($_POST["name1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+
 
   //check if username is in db
   if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
@@ -65,31 +60,19 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
 
   $stmt->fetch();
 
-  if ($username_exists) {
+  if (!$username_exists) {
     mysqli_close($mysqli);
-    die('un-exists');
+    die('No account associated with this email address.');
   }
-  //add a new entry
-  else {
-    if (!($stmt = $mysqli->prepare("INSERT INTO test.users (email, password, name) VALUES (?,?,?)"))) {
+  else { //check password
+    $stmt = NULL;
+    $original_userID = $username_exists;
+    $compare_userID = NULL;
+    if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE password = ?"))) {
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    if (!$stmt->bind_param("sss", $username, $password, $name)) {
-      echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
-    }
-
-    //add user
-    if (!$stmt->execute()) {
-      echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
-    }
-
-    //get the the userID
-    if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
-      echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
-    }
-
-    if (!$stmt->bind_param("s", $username)) {
+    if (!$stmt->bind_param("s", $password)) {
       echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
@@ -97,19 +80,24 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
       echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    $userID = NULL;
-
-    if (!$stmt->bind_result($userID)) {
+    if (!$stmt->bind_result($compare_userID)) {
       echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
     $stmt->fetch();
 
     mysqli_close($mysqli);
-    die('User Added.');
-    //header("Location: /cs290-finalProject/content.php?userID=" . $userID);
+
+    if (!($original_userID === $compare_userID)) {
+      die('Invalid password');
+    }
+    else {
+      session_start();
+      $_SESSION['userID'] = $original_userID;
+      echo('login');
+    }
   }
 }
 else {
-  die('Bad login info.');
+  die('Bad POST request.');
 }

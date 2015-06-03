@@ -21,9 +21,6 @@ if(isset($_POST["username"]))
 //  }
 
 
-  //received username value from registration page
-  $username =  $_POST["username"];
-
   //trim and lowercase username
   $username =  strtolower(trim($_POST["username"]));
 
@@ -62,7 +59,7 @@ if(isset($_POST["username"]))
     die('<img src="imgs/red-x.png" width="20" class="user-warn"/><span id="un-exists">user name already exists</span>');
   }
   else if(!isEmail($username)) {
-    die('<img src="imgs/red-x.png" width="20" class="user-warn"/>');
+    die('<img src="imgs/red-x.png" width="20" class="user-warn"/><span id="un-exists">invalid email</span>');
   }
   else {
     die('<img src="imgs/green-check.png" width="20" class="user-warn"/>');

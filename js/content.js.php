@@ -4,13 +4,17 @@
 
 $(document).ready(function() {
   var userID = <?php echo $_SESSION['userID'] ?>;
-  var userDataString = null;
 
   $.post('content_data.php', {userID_p: userID}, function (data) {
-    userDataString = data;
+    if (data == 'shit') {
+      alert('shit');
+    }
+    else {
+      var obj = jQuery.parseJSON(data);
+      alert(obj.personalData.name);
+    }
   });
 
-  var obj = jQuery.parseJSON(userDataString);
-  alert (obj.personalData.name);
+
 
 });

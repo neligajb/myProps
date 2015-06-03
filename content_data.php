@@ -73,9 +73,6 @@ if (isset($_POST["userID_p"])) {
     echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
-  $row = array();
-  $personalData = array();
-
   $outUserID = NULL;
   $outEmail = NULL;
   $outName = NULL;
@@ -84,12 +81,12 @@ if (isset($_POST["userID_p"])) {
     echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
   }
 
-  while ($stmt->fetch()) {
-    $row['userID'] = $outUserID;
-    $row['email'] = $outEmail;
-    $row['name'] = $outName;
+  $personalData = array();
 
-    array_push($personalData, $row);
+  while ($stmt->fetch()) {
+    $personalData['userID'] = $outUserID;
+    $personalData['email'] = $outEmail;
+    $personalData['name'] = $outName;
   }
 
   mysqli_close($mysqli);
@@ -98,5 +95,10 @@ if (isset($_POST["userID_p"])) {
   $userData['personalData'] = $personalData;
   $userData['listingData'] = $listingData;
 
-  echo json_encode($userData);
+  if (!$jsonStr = json_encode($userData, JSON_FORCE_OBJECT)) {
+    die('shit');
+  }
+  else {
+    die($jsonStr);
+  }
 }

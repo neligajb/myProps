@@ -17,10 +17,6 @@ if (!isset($_SESSION['userID'])) {
 }
 ?>
 
-<?php
-echo $_SESSION['userID'];
-?>
-
 <!DOCTYPE html>
 <html>
 <head>

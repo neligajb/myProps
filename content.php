@@ -1,4 +1,9 @@
 <?php
+include 'content_data.php';
+include 'dbInfo.php';
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 if (!isset($_SESSION['userID'])) {
@@ -24,8 +29,11 @@ echo $_SESSION['userID'];
   <link href="styles.css" rel="stylesheet">
 </head>
   <body>
-
-  <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-  <script type="text/javascript" src="js/content.js"></script>
+    <h1 id="welcome">Welcome</h1>
+    <table id="listing-data">
+      <!-- dynamic content -->
+    </table>
   </body>
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/content.js.php"></script>
 </html>

@@ -13,7 +13,7 @@ if (!isset($_SESSION['userID'])) {
   $filePath = implode('/', $filePath);
   $redirect = "http://" . $_SERVER['HTTP_HOST'] . $filePath;
   header("Location: {$redirect}/login.php", true);
-  echo('died');
+  die();
 }
 ?>
 
@@ -25,7 +25,11 @@ if (!isset($_SESSION['userID'])) {
   <link href="styles.css" rel="stylesheet">
 </head>
   <body>
-    <h1 id="welcome">Welcome</h1>
+  <header>
+    <form action="logout.php" method="post"><input type="submit" value="Logout"></form>
+    <h1 class="title">MyProps</h1>
+  </header>
+    <h2 id="welcome">Welcome </h2>
     <table id="listing-data">
       <!-- dynamic content -->
     </table>

@@ -11,7 +11,7 @@ $(document).ready(function() {
     }
     else {
       var obj = jQuery.parseJSON(data);
-      alert(obj.personalData.name);
+      $('#welcome').append(obj.personalData.name);
     }
   });
 

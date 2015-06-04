@@ -26,7 +26,7 @@ if ((isset($_SESSION['userID']))) {
       <input type="email" name="demail" id="email"><br>
       <label for="password">Password</label>
       <input type="password" name="password" id="password"><br>
-      <input type="button" name="login" class="home-submit" id="login" value="Login">
+      <input type="button" name="login" class="myButton" id="login" value="Login">
     </form>
   </div>
   <p id="registered-question">

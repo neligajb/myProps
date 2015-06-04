@@ -102,3 +102,49 @@ if (isset($_POST["userID_p"])) {
     die($jsonStr);
   }
 }
+else if (isset($_POST["address1"])) {
+
+  if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
+    die('Bad POST request.');
+  }
+
+
+  //connect to db
+
+  $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
+  if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    die();
+  }
+
+  //sanitize entries
+  $address = filter_var($_POST["address1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+  $city = filter_var($_POST["city1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+  $state = filter_var($_POST["state1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+  $zip = filter_var($_POST["zip1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+  $userID = (int) $_POST["userID1"];
+
+  if ($address == '') {
+    mysqli_close($mysqli);
+    die('No address');
+  }
+
+  //add a new entry
+
+  if (!($stmt = $mysqli->prepare("INSERT INTO test.listings (address, city, state, zip, ownerID) VALUES (?,?,?,?,?)"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  if (!$stmt->bind_param("ssssi", $address, $city, $state, $zip, $userID)) {
+    echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  //add listing
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  mysqli_close($mysqli);
+
+  die('Listing Added');
+}

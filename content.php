@@ -25,11 +25,17 @@ if (!isset($_SESSION['userID'])) {
   <link href="styles.css" rel="stylesheet">
 </head>
   <body>
-  <header>
-    <form action="logout.php" method="post"><input type="submit" value="Logout"></form>
-    <h1 class="title">MyProps</h1>
-  </header>
-    <h2 id="welcome">Welcome </h2>
+    <header>
+      <form action="logout.php" method="post"><input type="submit" value="Logout" class="myButton"></form>
+      <h1 class="title">MyProps</h1>
+    </header>
+    <h2 id="welcome">Hi, </h2>
+    <form>
+      <input type="button" name="add-prop" class="myButton" id="add-prop" value="Add Property">
+    </form>
+    <div id="add-prop-form">
+      <!-- dynamic form -->
+    </div>
     <table id="listing-data">
       <!-- dynamic content -->
     </table>

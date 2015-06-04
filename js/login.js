@@ -13,8 +13,8 @@ $(document).ready(function() {
     $("#registration-form").append("<h2>Sign Up</h2><form><label for='new-email'>Email</label>" +
     "<input type='email' id='new-email' maxlength='50' required ><span id='user-result'></span><br>" +
     "<label for='new-name'>Name</label><input type='text' id='new-name' maxlength='50' required ><br>" +
-    "<label for='new-password'>Password</label><input type='password' id='new-password' maxlength='20' required</form>" +
-    "<br><input type='button' name='register' class='home-submit' id='register' value='Submit'></form>");
+    "<label for='new-password'>Password</label><input type='password' id='new-password' maxlength='20' required >" +
+    "<br><input type='button' name='register' class='myButton' id='register' value='Submit'></form>");
   });
 
   $registrationForm.on('focus', '#new-email', function () {

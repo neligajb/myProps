@@ -9,6 +9,12 @@ body {
     line-height: normal;
 }
 
+#welcome {
+    border-bottom: 2px dotted lightgray;
+    text-decoration: none;
+    display: inline-block;
+}
+
 #user-result {
     margin-left: 2px;
     display: inline-block
@@ -67,9 +73,56 @@ header {
 
 header > form > input {
     float: right;
-    height: 29px;
     margin-top: 8px;
     margin-right: 8px;
-    border-radius: 15px;
     display: inline;
+}
+
+.myButton {
+    border-radius: 5px;
+    height: 29px;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+#add-prop {
+    margin-left: 9px;
+}
+
+#add-prop-form {
+    margin: 5px;
+}
+
+#add-prop-form > form > input {
+    margin: 4px;
+    height: 23px;
+    border-radius: 3px;
+    border: 1px solid dimgray;
+    font-size: 1.2em;
+    padding-left: 2px;
+}
+
+#add-prop-form > form > input.myButton {
+    height: 1.8em;
+    padding: 5px;
+    margin-left: 18px;
+    font-size: 1.2em;
+    background-color: rgba(51, 102, 255, 0.35);
+    border-width: 2px;
+}
+
+#new-address {
+    width: 250px;
+}
+
+#new-city {
+    width: 150px;
+}
+
+#new-state {
+    width: 50px;
+}
+
+#new-zip {
+    width: 75px;
 }

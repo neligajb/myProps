@@ -69,7 +69,10 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
     mysqli_close($mysqli);
     die('un-exists');
   }
-  //add a new entry
+
+
+  //add a new user entry
+
   else {
     if (!($stmt = $mysqli->prepare("INSERT INTO test.users (email, password, name) VALUES (?,?,?)"))) {
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
@@ -106,8 +109,9 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
     $stmt->fetch();
 
     mysqli_close($mysqli);
-    die('User Added.');
-    //header("Location: /cs290-finalProject/content.php?userID=" . $userID);
+    session_start();
+    $_SESSION['userID'] = $userID;
+    echo('User Added.');
   }
 }
 else {

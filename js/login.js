@@ -17,6 +17,7 @@ $(document).ready(function() {
     "<br><input type='button' name='register' class='myButton' id='register' value='Submit'></form>");
   });
 
+
   $registrationForm.on('focus', '#new-email', function () {
     $('input[id="new-email"]').css({"border": "", "box-shadow": ""});
   });
@@ -28,6 +29,7 @@ $(document).ready(function() {
   $registrationForm.on('focus', '#new-password', function () {
     $('input[id="new-password"]').css({"border": "", "box-shadow": ""});
   });
+
 
   $registrationForm.on('click', '#register', function () {
     var emailP = $("#new-email").val();
@@ -63,6 +65,9 @@ $(document).ready(function() {
       }
       else {
         $registrationForm.append('<p id="login-response"></p>');
+        if (data == 'User Added.') {
+          window.location.replace("http://localhost/cs290-finalProject/content.php");
+        }
         $("#login-response").html(data); //dump the data received from PHP page
       }
     });

@@ -20,7 +20,7 @@ if (isset($_POST["userID_p"])) {
 
   //get user's listing data from db
 
-  if (!($stmt = $mysqli->prepare("SELECT listingID, address, city, state, zip, sharedByID FROM test.listings WHERE ownerID = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT listingID, address, city, state, zip, sharedByID, sharedByName FROM test.listings WHERE ownerID = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -41,8 +41,9 @@ if (isset($_POST["userID_p"])) {
   $outState = NULL;
   $outZip = NULL;
   $outSharedByID = NULL;
+  $outSharedByName = NULL;
 
-  if (!$stmt->bind_result($outListingID, $outAddress, $outCity, $outState, $outZip, $outSharedByID)) {
+  if (!$stmt->bind_result($outListingID, $outAddress, $outCity, $outState, $outZip, $outSharedByID, $outSharedByName)) {
     echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
   }
 
@@ -53,9 +54,11 @@ if (isset($_POST["userID_p"])) {
     $row['state'] = $outState;
     $row['zip'] = $outZip;
     $row['sharedByID'] = $outSharedByID;
+    $row['sharedByName'] = $outSharedByName;
 
     array_push($listingData, $row);
   }
+
 
   // get user's personal data from db
 
@@ -89,6 +92,8 @@ if (isset($_POST["userID_p"])) {
     $personalData['name'] = $outName;
   }
 
+  //close db connection and build JSON array
+
   mysqli_close($mysqli);
 
   $userData = array();
@@ -102,6 +107,10 @@ if (isset($_POST["userID_p"])) {
     die($jsonStr);
   }
 }
+
+
+//add listing
+
 else if (isset($_POST["address1"])) {
 
   if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {

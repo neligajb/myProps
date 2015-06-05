@@ -56,7 +56,7 @@ if(isset($_POST["username"]))
 
   //if returned value is not null, username is not available
   if ($username_exists && isEmail($username)) {
-    die('<img src="imgs/red-x.png" width="20" class="user-warn"/><span id="un-exists">user name already exists</span>');
+    die('<img src="imgs/red-x.png" width="20" class="user-warn"/><span id="un-exists">account already exists</span>');
   }
   else if(!isEmail($username)) {
     die('<img src="imgs/red-x.png" width="20" class="user-warn"/><span id="un-exists">invalid email</span>');

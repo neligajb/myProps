@@ -31,7 +31,7 @@ if ((isset($_SESSION['userID']))) {
   </div>
   <p id="registered-question">
     Not a registered user?
-    <button id="registration-button">Sign Up</button>
+    <button id="registration-button" class="myButton">Sign Up</button>
   </p>
   <div id="registration-form" class="home-form">
     <!-- dynamic content from scripts.js -->

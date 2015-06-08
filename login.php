@@ -19,6 +19,7 @@ if ((isset($_SESSION['userID']))) {
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
+  <h1>Welcome to MyProps</h1>
   <div id="login-form" class="home-form">
     <form id="login-inner-form">
       <h2>Login</h2>

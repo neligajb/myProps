@@ -101,7 +101,7 @@ if (isset($_POST["userID_p"])) {
   $userData['listingData'] = $listingData;
 
   if (!$jsonStr = json_encode($userData, JSON_FORCE_OBJECT)) {
-    die('shit');
+    die('could not encode JSON');
   }
   else {
     die($jsonStr);
@@ -156,4 +156,193 @@ else if (isset($_POST["address1"])) {
   mysqli_close($mysqli);
 
   die('Listing Added');
+}
+
+
+//delete listing
+
+else if (isset($_POST["deleteID"])) {
+  $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
+  if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    die();
+  }
+
+  //sanitize entry
+  $deleteID = filter_var($_POST["deleteID"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+
+  if (!($stmt = $mysqli->prepare("DELETE FROM test.listings WHERE listingID = ?"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  if (!$stmt->bind_param("i", $deleteID)) {
+    echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  //delete listing
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  mysqli_close($mysqli);
+
+  die('Listing Deleted');
+}
+
+
+//get list of user emails
+
+else if (isset($_POST["getUsers"]) && $_POST["getUsers"] == 'true') {
+  $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
+  if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    die();
+  }
+
+  if (!($stmt = $mysqli->prepare("SELECT email FROM test.users"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+
+  //get emails list
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  $email = NULL;
+
+  if (!$stmt->bind_result($email)) {
+    echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  $emailsList = array();
+
+  while ($stmt->fetch()) {
+    array_push($emailsList, $email);
+  }
+
+  mysqli_close($mysqli);
+
+  if (!$jsonStr = json_encode($emailsList, JSON_FORCE_OBJECT)) {
+    die('could not encode JSON');
+  }
+  else {
+    die($jsonStr);
+  }
+}
+
+//add shared listing
+
+else if (isset($_POST["sharingUserID"]) && isset($_POST["sharedListingID"]) && isset($_POST["toBeSharedWithEmail"])) {
+  $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
+  if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    die();
+  }
+
+  $sharedListingID = $_POST["sharedListingID"];
+  $sharingUserID = $_POST["sharingUserID"];
+  $toBeSharedWithEmail = $_POST["toBeSharedWithEmail"];
+
+
+  //get listing details
+
+  if (!($stmt = $mysqli->prepare("SELECT address, city, state, zip FROM test.listings WHERE listingID = ?"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  if (!$stmt->bind_param("i", $sharedListingID)) {
+    echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  $outAddress = NULL;
+  $outCity = NULL;
+  $outState = NULL;
+  $outZip = NULL;
+
+  if (!$stmt->bind_result($outAddress, $outCity, $outState, $outZip)) {
+    echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  $stmt->fetch();
+
+
+  //get sharing user's name
+
+  $stmt = NULL;
+
+  if (!($stmt = $mysqli->prepare("SELECT name FROM test.users WHERE userID = ?"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  if (!$stmt->bind_param("s", $sharingUserID)) {
+    echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  $outSharedByName = NULL;
+
+  if (!$stmt->bind_result($outSharedByName)) {
+    echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  $stmt->fetch();
+
+
+  //get userID of user that listing is being shared with
+
+  $stmt = NULL;
+
+  if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  if (!$stmt->bind_param("s", $toBeSharedWithEmail)) {
+    echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  $outUserID_toBeSharedWith = NULL;
+
+  if (!$stmt->bind_result($outUserID_toBeSharedWith)) {
+    echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  $stmt->fetch();
+
+  if ($outUserID_toBeSharedWith == NULL || $outUserID_toBeSharedWith == '') {
+    die("User not found.");
+  }
+
+
+  //add listing to table, with ownerID set to the user to be shared with
+
+  $stmt = NULL;
+
+  if (!($stmt = $mysqli->prepare("INSERT INTO test.listings (address, city, state, zip, ownerID, sharedByID, sharedByName) VALUES (?,?,?,?,?,?,?)"))) {
+    echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  if (!$stmt->bind_param("ssssiis", $outAddress, $outCity, $outState, $outZip, $outUserID_toBeSharedWith, $sharingUserID, $outSharedByName)) {
+    echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
+  }
+
+  //add listing
+  if (!$stmt->execute()) {
+    echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
+  }
+
+  mysqli_close($mysqli);
+
+  die('Listing Shared');
 }

@@ -4,6 +4,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 if (isset($_POST["userID_p"])) {
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
 
   if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die('Bad POST request.');
@@ -20,7 +24,7 @@ if (isset($_POST["userID_p"])) {
 
   //get user's listing data from db
 
-  if (!($stmt = $mysqli->prepare("SELECT listingID, address, city, state, zip, sharedByID, sharedByName FROM test.listings WHERE ownerID = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT listingID, address, city, state, zip, sharedByID, sharedByName FROM listings WHERE ownerID = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -64,7 +68,7 @@ if (isset($_POST["userID_p"])) {
 
   $stmt = NULL;
 
-  if (!($stmt = $mysqli->prepare("SELECT userID, email, name FROM test.users WHERE userID = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT userID, email, name FROM users WHERE userID = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -112,6 +116,10 @@ if (isset($_POST["userID_p"])) {
 //add listing
 
 else if (isset($_POST["address1"])) {
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
 
   if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die('Bad POST request.');
@@ -140,7 +148,7 @@ else if (isset($_POST["address1"])) {
 
   //add a new entry
 
-  if (!($stmt = $mysqli->prepare("INSERT INTO test.listings (address, city, state, zip, ownerID) VALUES (?,?,?,?,?)"))) {
+  if (!($stmt = $mysqli->prepare("INSERT INTO listings (address, city, state, zip, ownerID) VALUES (?,?,?,?,?)"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -162,6 +170,11 @@ else if (isset($_POST["address1"])) {
 //delete listing
 
 else if (isset($_POST["deleteID"])) {
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
+
   $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
   if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
@@ -171,7 +184,7 @@ else if (isset($_POST["deleteID"])) {
   //sanitize entry
   $deleteID = filter_var($_POST["deleteID"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
 
-  if (!($stmt = $mysqli->prepare("DELETE FROM test.listings WHERE listingID = ?"))) {
+  if (!($stmt = $mysqli->prepare("DELETE FROM listings WHERE listingID = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -193,13 +206,18 @@ else if (isset($_POST["deleteID"])) {
 //get list of user emails
 
 else if (isset($_POST["getUsers"]) && $_POST["getUsers"] == 'true') {
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
+
   $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
   if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
     die();
   }
 
-  if (!($stmt = $mysqli->prepare("SELECT email FROM test.users"))) {
+  if (!($stmt = $mysqli->prepare("SELECT email FROM users"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -234,6 +252,11 @@ else if (isset($_POST["getUsers"]) && $_POST["getUsers"] == 'true') {
 //add shared listing
 
 else if (isset($_POST["sharingUserID"]) && isset($_POST["sharedListingID"]) && isset($_POST["toBeSharedWithEmail"])) {
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
+
   $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
   if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
@@ -247,7 +270,7 @@ else if (isset($_POST["sharingUserID"]) && isset($_POST["sharedListingID"]) && i
 
   //get listing details
 
-  if (!($stmt = $mysqli->prepare("SELECT address, city, state, zip FROM test.listings WHERE listingID = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT address, city, state, zip FROM listings WHERE listingID = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -275,7 +298,7 @@ else if (isset($_POST["sharingUserID"]) && isset($_POST["sharedListingID"]) && i
 
   $stmt = NULL;
 
-  if (!($stmt = $mysqli->prepare("SELECT name FROM test.users WHERE userID = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT name FROM users WHERE userID = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -300,7 +323,7 @@ else if (isset($_POST["sharingUserID"]) && isset($_POST["sharedListingID"]) && i
 
   $stmt = NULL;
 
-  if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT userID FROM users WHERE email = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -329,7 +352,7 @@ else if (isset($_POST["sharingUserID"]) && isset($_POST["sharedListingID"]) && i
 
   $stmt = NULL;
 
-  if (!($stmt = $mysqli->prepare("INSERT INTO test.listings (address, city, state, zip, ownerID, sharedByID, sharedByName) VALUES (?,?,?,?,?,?,?)"))) {
+  if (!($stmt = $mysqli->prepare("INSERT INTO listings (address, city, state, zip, ownerID, sharedByID, sharedByName) VALUES (?,?,?,?,?,?,?)"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 

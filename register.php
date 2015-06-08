@@ -45,7 +45,7 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
   $name = filter_var($_POST["name1"], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
 
   //check if username is in db
-  if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT userID FROM users WHERE email = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -74,7 +74,9 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
   //add a new user entry
 
   else {
-    if (!($stmt = $mysqli->prepare("INSERT INTO test.users (email, password, name) VALUES (?,?,?)"))) {
+    $stmt = NULL;
+
+    if (!($stmt = $mysqli->prepare("INSERT INTO users (email, password, name) VALUES (?,?,?)"))) {
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
@@ -88,7 +90,7 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
     }
 
     //get the the userID
-    if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
+    if (!($stmt = $mysqli->prepare("SELECT userID FROM users WHERE email = ?"))) {
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 

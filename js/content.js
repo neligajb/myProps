@@ -1,18 +1,15 @@
-<?php header("Content-type: application/javascript"); ?>
-
-<?php session_start(); ?>
-
 $(document).ready(function() {
-  var userID = <?php echo $_SESSION['userID'] ?>;
-
   var $addPropForm = $('#add-prop-form');
   var $listingData = $('#listing-data');
   var $welcome = $('#welcome');
 
+
   getData();
 
   function getData() {
-    $.post('content_data.php', {userID_p: userID}, function (data) {
+    var $userID = $('#userID').attr('user');
+
+    $.post('content_data.php', {userID_p: $userID}, function (data) {
       if (data == 'could not encode JSON') {
         alert('could not encode JSON');
       }
@@ -27,7 +24,7 @@ $(document).ready(function() {
 
 
   function makeListings($obj) {
-    if ($obj.listingData != null) {
+    if ($obj.listingData[0] != null) {
       $listingData.append("<caption>My Favorite Properties</caption>" +
         "<thead><th>Address</th><th>City</th><th>State</th><th>Zip Code</th><th></th><th></th><th></th><th></th></thead><tbody>");
       for (var prop in $obj.listingData) {
@@ -38,12 +35,15 @@ $(document).ready(function() {
           if ($sharedByName == null) {
             $sharedByName = '';
           }
+          else {
+            $sharedByName = "Shared by " + $sharedByName;
+          }
           $listingData.append("<tr><td>" + $obj.listingData[prop]['address'] + "</td>" +
             "<td>" + $obj.listingData[prop]['city'] + "</td> <td>" + $obj.listingData[prop]['state'] + "</td>" +
             "<td>" + $obj.listingData[prop]['zip'] + "</td>" +
             "<td><button id='" + $fullAddress + "' class='myButton map-listing' data-toggle='modal' data-target='#myModal'>Map</button>" +
             "<td id='listing-" + $obj.listingData[prop]['listingID'] + "'><button value='" + $obj.listingData[prop]['listingID'] + "' id='" + $obj.personalData.userID + "' class='myButton share-listing'>Share</button>" +
-            "</td><td>" + $sharedByName + "</td>" +
+            "</td><td class='shared-by'>" + $sharedByName + "</td>" +
             "<td><button id='" + $obj.listingData[prop]['listingID'] + "' class='myButton delete-listing'><img src='imgs/red-x.png' width='25'></button></td></tr>");
         }
       }
@@ -71,9 +71,11 @@ $(document).ready(function() {
       return;
     }
 
-    if(!(Math.floor(zipP) == zipP && $.isNumeric(zipP)) || zipP.length < 5) {
-      alert('Please enter a 5 digit numerical zip code');
-      return;
+    if (zipP != '') {
+      if(!(Math.floor(zipP) == zipP && $.isNumeric(zipP)) || zipP.length < 5) {
+        alert('Please enter a 5 digit numerical zip code');
+        return;
+      }
     }
 
     $.post('content_data.php', {userID1: $obj.personalData.userID, address1: addressP, city1: cityP, state1: stateP, zip1: zipP}, function(data) {
@@ -114,6 +116,9 @@ $(document).ready(function() {
 
       $.post('content_data.php', {sharingUserID: e.data.param1, sharedListingID: e.data.param2, toBeSharedWithEmail: $toBeSharedWithEmail}, function(data) {
         if (data == 'Listing Shared') {
+          alert(data);
+        }
+        else if (data == 'User not found.') {
           alert(data);
         }
       });

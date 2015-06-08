@@ -13,6 +13,7 @@ if (!isset($_SESSION['userID'])) {
   $filePath = implode('/', $filePath);
   $redirect = "http://" . $_SERVER['HTTP_HOST'] . $filePath;
   header("Location: {$redirect}/login.php", true);
+  echo('die');
   die();
 }
 ?>
@@ -29,9 +30,9 @@ if (!isset($_SESSION['userID'])) {
   <script src="https://maps.googleapis.com/maps/api/js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="js/content.js.php"></script>
+  <script type="text/javascript" src="js/content.js"></script>
 </head>
-  <body>
+  <body id="userID" user="<?php echo $_SESSION['userID'] ?>">
     <div class="container-fluid">
       <header>
         <form action="logout.php" method="post"><input type="submit" value="Logout" class="myButton"></form>

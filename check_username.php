@@ -9,6 +9,10 @@ if(isset($_POST["username"]))
   if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die();
   }
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
 
   //connect to database
   $mysqli = new mysqli($db_address, $db_user, $db_password, $db_name);
@@ -28,7 +32,7 @@ if(isset($_POST["username"]))
   $username = filter_var($username, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
 
   //check if username is in db
-  if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT userID FROM users WHERE email = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 

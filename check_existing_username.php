@@ -9,6 +9,10 @@ function isEmail($n) {
 
 
 if (isset($_POST["username1"]) && isset($_POST["password1"])) {
+  global $db_password;
+  global $db_address;
+  global $db_user;
+  global $db_name;
 
   if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die('Bad POST request.');
@@ -40,7 +44,7 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
 
 
   //check if username is in db
-  if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE email = ?"))) {
+  if (!($stmt = $mysqli->prepare("SELECT userID FROM users WHERE email = ?"))) {
     echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
   }
 
@@ -67,12 +71,11 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
   else { //check password
     $stmt = NULL;
     $original_userID = $username_exists;
-    $compare_userID = NULL;
-    if (!($stmt = $mysqli->prepare("SELECT userID FROM test.users WHERE password = ?"))) {
+    if (!($stmt = $mysqli->prepare("SELECT password FROM users WHERE $original_userID = ?"))) {
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    if (!$stmt->bind_param("s", $password)) {
+    if (!$stmt->bind_param("s", $original_userID)) {
       echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
@@ -80,7 +83,9 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
       echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    if (!$stmt->bind_result($compare_userID)) {
+    $comparePass = NULL;
+
+    if (!$stmt->bind_result($comparePass)) {
       echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
@@ -88,7 +93,8 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
 
     mysqli_close($mysqli);
 
-    if (!($original_userID === $compare_userID)) {
+    if ($password != $comparePass) {
+      echo $original_userID;
       die('Invalid password');
     }
     else {
@@ -98,6 +104,7 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
     }
   }
 }
+
 else {
   die('Bad POST request.');
 }

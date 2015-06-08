@@ -94,7 +94,7 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
     mysqli_close($mysqli);
 
     if ($password != $comparePass) {
-      echo $original_userID;
+      //echo $original_userID;
       die('Invalid password');
     }
     else {

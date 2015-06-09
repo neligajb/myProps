@@ -98,6 +98,7 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
       die('Invalid password');
     }
     else {
+      ini_set('session.save_path', '../sessions');
       session_start();
       $_SESSION['userID'] = $original_userID;
       echo('login');

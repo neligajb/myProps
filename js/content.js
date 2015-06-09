@@ -100,7 +100,7 @@ $(document).ready(function() {
 
       var listingTD_ID = "#listing-" + $sharedListingID;
 
-      $(listingTD_ID).append("<form id='share-form'><br><input type='text' id='share-with' placeholder='Enter email address'>" +
+      $(listingTD_ID).append("<form id='share-form'><input type='text' id='share-with' placeholder='Enter email address'>" +
       "<input type='button' name='submit-share' class='myButton' id='submit-share' value='&#10144'></form>");
 
 

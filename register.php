@@ -111,6 +111,7 @@ if (isset($_POST["username1"]) && isset($_POST["name1"]) && isset($_POST["passwo
     $stmt->fetch();
 
     mysqli_close($mysqli);
+    ini_set('session.save_path', '../sessions');
     session_start();
     $_SESSION['userID'] = $userID;
     echo('User Added.');

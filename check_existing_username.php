@@ -71,11 +71,11 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
   else { //check password
     $stmt = NULL;
     $original_userID = $username_exists;
-    if (!($stmt = $mysqli->prepare("SELECT password FROM users WHERE $original_userID = ?"))) {
+    if (!($stmt = $mysqli->prepare("SELECT userID FROM users WHERE userID = ? AND password = ?"))) {
       echo "Prepared statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    if (!$stmt->bind_param("s", $original_userID)) {
+    if (!$stmt->bind_param("is", $original_userID, $password)) {
       echo "Binding output params failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
@@ -83,18 +83,22 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
       echo "Execute statement failed: (" . $mysqli->errno . ") " . $mysqli->error;
     }
 
-    $comparePass = NULL;
+    $matches = array();
+    $match = NULL;
 
-    if (!$stmt->bind_result($comparePass)) {
+    if (!$stmt->bind_result($match)) {
       echo "Binding result failed: (" . $stmt->errno . ") " . $stmt->error;
     }
 
-    $stmt->fetch();
+    while ($stmt->fetch()) {
+      array_push($matches, $match);
+    }
 
     mysqli_close($mysqli);
 
-    if ($password != $comparePass) {
-      //echo $original_userID;
+
+    if (count($matches) < 1) {
+      //echo ($original_userID . ' ' . $password . ' ' . $match . ' ');
       die('Invalid password');
     }
     else {

@@ -66,7 +66,7 @@ $(document).ready(function() {
       else {
         $registrationForm.append('<p id="login-response"></p>');
         if (data == 'User Added.') {
-          window.location.replace("http://web.engr.oregonstate.edu/~neliganj/cs290-finalProject/content.php");
+          window.location.replace("http://two30four.com/myprops/content.php");
         }
         $("#login-response").html(data); //dump the data received from PHP page
       }
@@ -102,7 +102,7 @@ $(document).ready(function() {
 
     $.post('check_existing_username.php', {username1: emailP, password1: passwordP}, function (data) {
       if (data == 'login') {
-        window.location.replace("http://web.engr.oregonstate.edu/~neliganj/cs290-finalProject/content.php");
+        window.location.replace("http://two30four.com/myprops/content.php");
       }
       $('#login-inner-form').append('<span id="login-response1"></span>');
       $("#login-response1").html(data); //dump the data received from PHP page

@@ -14,6 +14,7 @@ if (isset($_POST["username1"]) && isset($_POST["password1"])) {
   global $db_user;
   global $db_name;
 
+
   if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
     die('Bad POST request.');
   }
